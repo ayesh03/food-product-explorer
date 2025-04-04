@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect, Suspense } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
+import ProductDetail from './pages/ProductDetail';
 
-function App() {
+const App = () => {
+  const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true');
+
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode.toString());
+    document.documentElement.classList.toggle('dark', darkMode);
+  }, [darkMode]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-white">
+      <Router>
+        <div className="p-4">
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="mb-4 p-2 bg-blue-500 text-white rounded"
+          >
+            Toggle Dark Mode
+          </button>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/product/:code" element={<ProductDetail />} />
+            </Routes>
+          </Suspense>
+        </div>
+      </Router>
     </div>
   );
-}
+};
 
 export default App;
